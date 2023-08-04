@@ -1,9 +1,13 @@
-// import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-// export async function GET(request: Request) {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get("id");
 
-//   return NextResponse.json({ text: "hello" });
-// }
+  const code = await genCode(Number(id));
+
+  return NextResponse.json({ code: code });
+}
 
 const Chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 const CodeLength = 6;
@@ -12,7 +16,10 @@ const Prime = 7;
 const Prime2 = 5;
 const Base = Chars.length;
 
-function genCode(id: number) {
+function genCode(id: number | null) {
+  if (!id) {
+    return "你没有邀请码";
+  }
   let b = Array(CodeLength).fill(0);
   let res = "";
 
@@ -37,7 +44,7 @@ function genCode(id: number) {
   return res;
 }
 
-function decode(code: String) {
+function decode(code: string) {
   if (code.length != CodeLength) {
     return -1;
   }
@@ -84,4 +91,3 @@ function decode(code: String) {
   console.log(res);
   return res;
 }
-
